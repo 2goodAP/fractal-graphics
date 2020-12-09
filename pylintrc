@@ -1,0 +1,2 @@
+# Whitelist C extensions from pygame
+extension-pkg-whitelist = pygame
