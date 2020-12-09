@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import QUIT
 
 import line_fractals
+import n_flakes
 
 
 def main():
@@ -19,14 +20,15 @@ def main():
 
     while running:
         print('Choose fractal type:')
-        print('1. Koch Snowflake\n2. Fractal Tree')
+        print('1. Koch Snowflake\n2. Fractal Tree\n3. Triflake\n4. Vicsek')
 
         try:
             choice = int(input('Enter your choice: '))
         except ValueError:
             choice = KOCH_SNOWFLAKE
 
-        if choice != KOCH_SNOWFLAKE and choice != FRACTAL_TREE:
+        if (choice != KOCH_SNOWFLAKE and choice != FRACTAL_TREE
+                and choice != TRIFLAKE and choice != VICSEK):
             print('error: Invalid choice. Exiting...', file=sys.stderr)
             sys.exit(1)
 
@@ -42,6 +44,10 @@ def main():
             line_fractals.draw_koch_snowflake(window, clock, FPS)
         elif choice == FRACTAL_TREE:
             line_fractals.draw_fractal_tree(window, clock, FPS)
+        elif choice == TRIFLAKE:
+            n_flakes.draw_triflake(window, clock, FPS)
+        elif choice == VICSEK:
+            n_flakes.draw_vicsek(window, clock, FPS)
 
         pygame.display.flip()
 
@@ -53,5 +59,7 @@ if __name__ == "__main__":
 
     KOCH_SNOWFLAKE = 1
     FRACTAL_TREE = 2
+    TRIFLAKE = 3
+    VICSEK = 4
 
     main()

@@ -1,156 +1,95 @@
 import math
 
+import pygame
 
-def _draw_hexaflake(self, steps, rd, ct):
+
+def draw_triflake(surface, clock, fps):
+    _generate_triflake(
+        surface, clock, fps, 8,
+        surface.get_width() / 2,
+        pygame.Vector2(surface.get_width() / 2,
+                       surface.get_height() / 2))
+
+
+def draw_vicsek(surface, clock, fps):
+    _generate_vicsek(
+        surface, clock, fps, 8,
+        surface.get_width() / 2,
+        pygame.Vector2(surface.get_width() / 2,
+                       surface.get_height() / 2))
+
+
+def _generate_triflake(surf, clk, fps, steps, radius, center):
     if steps <= 0:
-        pass
-    elif steps == 1:
-        poly = Polygon(self.num_vertices, rd, ct)
-        poly.color = self.COLORS[steps - 1]
+        return
 
-        if self.outlined:
-            poly.fill = False
+    scale_factor = _get_scale_factor(3)
+    poly = _Polygon(3, radius, center)
 
-        poly.draw(self.screen_ref, 1)
+    if steps == 1:
+        poly.draw(surf, clk, fps)
+        poly.color = (255, 255, 255)
+        clk.tick(fps)
     else:
-        if self.colorful:
-            poly = Polygon(self.num_vertices, rd, ct)
-            poly.color = self.COLORS[steps - 1]
+        for i in range(3):
+            cx = (center[0] + radius * math.cos(math.radians(120 * i + 90)) -
+                  radius * scale_factor * math.cos(math.radians(120 * i + 90)))
+            cy = (center[1] + radius * math.sin(math.radians(120 * i - 90)) +
+                  radius * scale_factor * math.sin(math.radians(120 * i + 90)))
 
-            if self.outlined:
-                poly.fill = False
-
-            poly.draw(self.screen_ref, 1)
-
-        self.__draw_hexaflake(steps - 1, rd * self.scale_factor, ct)
-
-        for i in range(0, self.num_vertices):
-            cx = (
-                ct[0] + rd *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)) -
-                rd * self.scale_factor *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)))
-            cy = (
-                ct[1] + rd *
-                math.sin(math.radians((self.angle_base) * i - self.ROTATION)) +
-                rd * self.scale_factor *
-                math.sin(math.radians((self.angle_base) * i + self.ROTATION)))
-            self.__draw_hexaflake(steps - 1, rd * self.scale_factor, (cx, cy))
+            _generate_triflake(surf, clk, fps, steps - 1,
+                               radius * scale_factor, pygame.Vector2(cx, cy))
 
 
-def _draw_pentaflake(self, steps, rd, ct, inv):
+def _generate_vicsek(surf, clk, fps, steps, radius, center):
     if steps <= 0:
-        pass
-    elif steps == 1:
-        poly = Polygon(self.num_vertices, rd, ct)
-        poly.color = self.COLORS[steps - 1]
+        return
 
-        if self.outlined:
-            poly.fill = False
+    scale_factor = 1 / 3
+    poly = _Polygon(4, radius, center)
 
-        poly.draw(self.screen_ref, inv)
+    if steps == 1:
+        poly.draw(surf, clk, fps)
     else:
-        if self.colorful:
-            poly = Polygon(self.num_vertices, rd, ct)
-            poly.color = self.COLORS[steps - 1]
+        _generate_vicsek(surf, clk, fps, steps - 1, radius * scale_factor,
+                         center)
 
-            if self.outlined:
-                poly.fill = False
+        for i in range(4):
+            cx = (center[0] + radius * math.cos(math.radians(90 * i + 90)) -
+                  radius * scale_factor * math.cos(math.radians(90 * i + 90)))
+            cy = (center[1] + radius * math.sin(math.radians(90 * i - 90)) +
+                  radius * scale_factor * math.sin(math.radians(90 * i + 90)))
 
-            poly.draw(self.screen_ref, inv)
-
-        self.__draw_pentaflake(steps - 1, rd * self.scale_factor, ct, -inv)
-
-        for i in range(0, self.num_vertices):
-            cx = (
-                ct[0] + rd *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)) -
-                rd * self.scale_factor *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)))
-            cy = (ct[1] + rd * math.sin(
-                math.radians((self.angle_base) * i - inv * self.ROTATION)) +
-                  inv * rd * self.scale_factor * math.sin(
-                      math.radians((self.angle_base) * i + self.ROTATION)))
-            self.__draw_pentaflake(steps - 1, rd * self.scale_factor, (cx, cy),
-                                   inv)
+            _generate_vicsek(surf, clk, fps, steps - 1, radius * scale_factor,
+                             pygame.Vector2(cx, cy))
 
 
-def _draw_vicsek(self, steps, rd, ct):
-    if steps <= 0:
-        pass
-    elif steps == 1:
-        poly = Polygon(self.num_vertices, rd, ct)
-        poly.color = self.COLORS[steps - 1]
-
-        if self.outlined:
-            poly.fill = False
-
-        poly.draw(self.screen_ref, 1)
-    else:
-        if self.colorful:
-            poly = Polygon(self.num_vertices, rd, ct)
-            poly.color = self.COLORS[steps - 1]
-
-            if self.outlined:
-                poly.fill = False
-
-            poly.draw(self.screen_ref, 1)
-
-        self.__draw_vicsek(steps - 1, rd * self.scale_factor, ct)
-
-        for i in range(0, self.num_vertices):
-            cx = (
-                ct[0] + rd *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)) -
-                rd * self.scale_factor *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)))
-            cy = (
-                ct[1] + rd *
-                math.sin(math.radians((self.angle_base) * i - self.ROTATION)) +
-                rd * self.scale_factor *
-                math.sin(math.radians((self.angle_base) * i + self.ROTATION)))
-            self.__draw_vicsek(steps - 1, rd * self.scale_factor, (cx, cy))
-
-
-def _draw_nflake(self, steps, rd, ct):
-    if steps <= 0:
-        pass
-    elif steps == 1:
-        poly = Polygon(self.num_vertices, rd, ct)
-        poly.color = self.COLORS[steps - 1]
-
-        if self.outlined:
-            poly.fill = False
-
-        poly.draw(self.screen_ref, 1)
-    else:
-        if self.colorful:
-            poly = Polygon(self.num_vertices, rd, ct)
-            poly.color = self.COLORS[steps - 1]
-
-            if self.outlined:
-                poly.fill = False
-
-            poly.draw(self.screen_ref, 1)
-
-        for i in range(0, self.num_vertices):
-            cx = (
-                ct[0] + rd *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)) -
-                rd * self.scale_factor *
-                math.cos(math.radians((self.angle_base) * i + self.ROTATION)))
-            cy = (
-                ct[1] + rd *
-                math.sin(math.radians((self.angle_base) * i - self.ROTATION)) +
-                rd * self.scale_factor *
-                math.sin(math.radians((self.angle_base) * i + self.ROTATION)))
-
-            self.__draw_nflake(steps - 1, rd * self.scale_factor, (cx, cy))
-
-
-def _get_scale_factor(self):
+def _get_scale_factor(n_verts):
     aux = 0
 
-    for i in range(0, self.num_vertices // 4):
-        aux += math.cos(2 * math.pi * (i + 1) / self.num_vertices)
-    self.scale_factor = 1 / (2 * (1 + aux))
+    for i in range(0, n_verts // 4):
+        aux += math.cos(2 * math.pi * (i + 1) / n_verts)
+
+    return 1 / (2 * (1 + aux))
+
+
+class _Polygon:
+    def __init__(self, n_verts, rad, center):
+        self.n_vertices = n_verts
+        self.radius = rad
+        self.center = center
+        self.angle_base = 360 / self.n_vertices
+        self.color = (0, 0, 0)
+
+    def draw(self, surf, clk, fps, inv=1):
+        coords = []
+
+        for i in range(self.n_vertices):
+            cx = round(self.center[0] + self.radius *
+                       math.cos(math.radians(self.angle_base * i + 90)))
+            cy = round(self.center[1] - inv * self.radius *
+                       math.sin(math.radians(self.angle_base * i + 90)))
+            coords.append(pygame.Vector2(cx, cy))
+
+        pygame.draw.polygon(surf, self.color, coords)
+        pygame.display.update()
