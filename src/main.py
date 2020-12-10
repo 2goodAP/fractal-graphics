@@ -8,9 +8,9 @@ import sys
 import pygame
 from pygame.locals import QUIT
 
-import curve_fractals
 import line_fractals
 import n_flakes
+import rose_patterns
 
 
 def main():
@@ -66,13 +66,13 @@ def main():
         elif choice == RHODONEA:
             window = _window_open("Rhodonea Rose")
 
-            curve_fractals.draw_rhodonea_rose(window, clock, FPS)
+            rose_patterns.draw_rhodonea_rose(window, clock, FPS)
 
             _window_close()
         else:
             window = _window_open("Maurer Rose")
 
-            curve_fractals.draw_maurer_rose(window, clock, FPS)
+            rose_patterns.draw_maurer_rose(window, clock, FPS)
 
             _window_close()
 
